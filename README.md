@@ -11,7 +11,8 @@ Instead of relying solely on the oracle for the final random number, we incorpor
 1. A user reports a hash of secret (user seed) it will use for seeding final randomness.
 2. The oracle, running in an SGX environment (ensuring genuine randomness and code integrity), picks a random seed and combines this with the most recent blockhash.
 3. The oracle reports the seed on-chain.
-4. Users derive the final random number using `sha256(userSeed, seed)`.
+4. The user then reveals their seed and will and generate the final randomness.
+5. Users derive the final random number using `sha256(userSeed, oracleSeed, blockhash)`. 
 
 ## Why SGX?
 
