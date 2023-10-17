@@ -51,7 +51,7 @@ Switchboard Functions allow you to **_"callback"_** into your program with some 
 
 Switchboard oracles will read the emitted partially signed transaction, verify the code was executed within a Trusted Execution Environment (TEE), and relay the transaction on-chain. Switchboard oracles read a generated "quote" from the codes runtime when you emit the partially signed transaction from your container. This code is unique to the generated executable and relevant OS files. Any time you change the code or a dependency, your quote will change and you will need to update your Switchboard Function config. These quotes are known as `MrEnclaves` and represent a fingerprint of the code and the runtime. <TODO: Expand on `MrEnclaves`>. Within your Switchboard Function, you define a whitelist of MrEnclaves that are allowed to perform some action on your contract's behalf. **!! Make sure you validate the Switchboard accounts, as seen below with:** `switchboard_request.validate_signer()`
 
-\```rust
+```rust
 #[derive(Accounts)]
 pub struct Settle<'info> {
     pub switchboard_function: AccountLoader<'info, FunctionAccountData>,
@@ -64,39 +64,39 @@ pub struct Settle<'info> {
     pub switchboard_request: Box<Account<'info, FunctionRequestAccountData>>,
     pub enclave_signer: Signer<'info>,
 }
-\```
+```
 
 ## Publishing a Switchboard Function
 
 Start by copying the env file to set your environment. To begin, you can use the default container for your program. When you're ready, you can make changes to the Switchboard Function and deploy to your own DockerHub organization.
 
-\```bash
+```bash
 echo 'DOCKER_IMAGE_NAME=mgild/superior-randomness' > .env
-\```
+```
 
 ### Deployment and Execution
 
 Set the anchor program IDs to your local keypairs so you can deploy this yourself:
 
-\```bash
+```bash
 anchor keys sync
-\```
+```
 
 Then deploy the contract with:
 
-\```bash
-make simple-flip-deploy
+```bash
+make superior-flip-deploy
 # OR
-anchor build -p super_simple_randomness
-anchor deploy --provider.cluster devnet -p super_simple_randomness
-\```
+anchor build -p superior_randomness
+anchor deploy --provider.cluster devnet -p superior_randomness
+```
 
 Submit a guess and await the result:
 
-\```bash
-make simple-flip
+```bash
+make superior-flip
 # OR
-anchor run simple-flip
-\```
+anchor run superior-flip
+```
 
 
