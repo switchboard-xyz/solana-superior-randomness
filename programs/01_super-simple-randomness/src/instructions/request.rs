@@ -2,6 +2,7 @@ pub use crate::SbError;
 pub use crate::*;
 
 #[derive(Accounts)]
+#[instruction(pubkey_hash: [u8; 32])] // rpc parameters hint
 pub struct Request<'info> {
     #[account(mut)]
     pub payer: Signer<'info>,
@@ -9,7 +10,9 @@ pub struct Request<'info> {
     #[account(
         init,
         space = 8 + std::mem::size_of::<RequestAccountData>(),
+        seeds = [&pubkey_hash],
         payer = payer,
+        bump,
     )]
     pub req: AccountLoader<'info, RequestAccountData>,
 
@@ -49,7 +52,7 @@ pub struct Request<'info> {
     pub system_program: Program<'info, System>,
 }
 impl Request<'_> {
-    pub fn request(ctx: Context<Request>) -> anchor_lang::Result<()> {
+    pub fn request(ctx: Context<Request>, pubkey_hash: [u8; 32]) -> anchor_lang::Result<()> {
         let mut req = ctx.accounts.req.load_init()?;
 
         // https://docs.rs/switchboard-solana/latest/switchboard_solana/attestation_program/instructions/request_init_and_trigger/index.html
@@ -94,6 +97,8 @@ impl Request<'_> {
             &[],
         )?;
 
+        req.bump = *ctx.bumps.get("req").unwrap();
+        req.pubkey_hash = pubkey_hash;
         req.request_timestamp = Clock::get()?.unix_timestamp;
         req.switchboard_request = ctx.accounts.switchboard_request.key();
 

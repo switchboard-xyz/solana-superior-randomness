@@ -4248,6 +4248,7 @@ name = "superior-randomness"
 version = "0.1.0"
 dependencies = [
  "anchor-lang",
+ "arrayref",
  "bytemuck",
  "switchboard-solana",
 ]

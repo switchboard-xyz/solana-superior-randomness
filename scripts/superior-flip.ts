@@ -191,7 +191,12 @@ interface CostReceipt {
   ////      RANDOMNESS         ////
   /////////////////////////////////
 
-  const randomessSourcer = anchor.web3.Keypair.generate();
+  const requestPubkey = anchor.web3.Keypair.generate().publicKey;
+  const seed = createHash("sha256").update(requestPubkey.toBytes()).digest();
+  const [pda] = await anchor.web3.PublicKey.findProgramAddress(
+    [seed],
+    program.programId
+  );
   const switchboardRequestKeypair = anchor.web3.Keypair.generate();
   const switchboardRequestEscrowPubkey = anchor.utils.token.associatedAddress({
     mint: switchboardProgram.mint.address,
@@ -210,13 +215,13 @@ interface CostReceipt {
   } = await testMeter.runAndAwaitEvent(
     "request",
     "RequestSeededEvent",
-    (event) => event.request.equals(randomessSourcer.publicKey),
+    (event) => event.request.equals(pda),
     async (meter) => {
       const tx = await program.methods
-        .request()
+        .request(seed)
         .accounts({
           payer: payer.publicKey,
-          req: randomessSourcer.publicKey,
+          req: pda,
           authority: payer.publicKey,
           switchboard: switchboardProgram.attestationProgramId,
           switchboardState:
@@ -227,7 +232,7 @@ interface CostReceipt {
           switchboardRequestEscrow: switchboardRequestEscrowPubkey,
           switchboardMint: switchboardProgram.mint.address,
         })
-        .signers([switchboardRequestKeypair, randomessSourcer])
+        .signers([switchboardRequestKeypair])
         .rpc();
 
       meter.addReceipt({
@@ -277,24 +282,14 @@ interface CostReceipt {
   console.log(`\n${CHECK_ICON} Request seed planted!! ${event.seed}\n`);
 
   const msg = numberToLittleEndianBuffer(event.seed);
-  const signedMessage = nacl.sign.detached(msg, randomessSourcer.secretKey);
-  const hash = createHash("sha256").update(signedMessage).digest("hex");
 
-  const sigVerifyIxParams = {
-    message: msg,
-    publicKey: randomessSourcer.publicKey.toBytes(),
-    signature: signedMessage,
-  };
   const tx = new Transaction();
   const ix = await program.methods
-    .reveal(signedMessage)
+    .reveal(requestPubkey)
     .accounts({
-      req: randomessSourcer.publicKey,
-      ed25519Program: Ed25519Program.programId,
-      instructionSysvar: SYSVAR_INSTRUCTIONS_PUBKEY,
+      req: pda,
     })
     .instruction();
-  tx.add(Ed25519Program.createInstructionWithPublicKey(sigVerifyIxParams));
   tx.add(ix);
   tx.recentBlockhash = (
     await program.provider.connection.getRecentBlockhash()

@@ -25,7 +25,7 @@ async fn main() {
     .unwrap();
 
 
-    let rand_seed = generate_randomness(0, 50_000_000);
+    let rand_seed = generate_randomness(0, 500_000_000);
 
     // IXN DATA:
     let mut ixn_data = get_ixn_discriminator("seed").to_vec();
@@ -34,7 +34,7 @@ async fn main() {
     let request_pubkey = runner.function_request_key.unwrap();
 
     // ACCOUNTS:
-    let draw_winner_ixn = Instruction {
+    let ixn = Instruction {
         program_id: params.program_id,
         data: ixn_data,
         accounts: vec![
@@ -42,16 +42,15 @@ async fn main() {
             AccountMeta::new_readonly(runner.function, false),
             AccountMeta::new(request_pubkey, false),
             AccountMeta::new_readonly(runner.signer, true),
+            AccountMeta::new_readonly(solana_sdk::sysvar::recent_blockhashes::ID, false),
         ],
     };
 
     // Then, write your own Rust logic and build a Vec of instructions.
     // Should  be under 700 bytes after serialization
-    let ixs: Vec<solana_program::instruction::Instruction> = vec![draw_winner_ixn];
-
     // Finally, emit the signed quote and partially signed transaction to the functionRunner oracle
     // The functionRunner oracle will use the last outputted word to stdout as the serialized result. This is what gets executed on-chain.
-    runner.emit(ixs).await.unwrap();
+    runner.emit(vec![ixn]).await.unwrap();
 }
 
 fn generate_randomness(min: u32, max: u32) -> u32 {
