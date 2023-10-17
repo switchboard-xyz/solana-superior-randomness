@@ -25,30 +25,15 @@ async fn main() {
     .unwrap();
 
 
-    // Determine the winner
-    let rand_seed = generate_randomness(0, 1000);
+    let rand_seed = generate_randomness(0, 50_000_000);
 
     // IXN DATA:
-    // LEN: 40 bytes
-    // [0-8]: Anchor Ixn Discriminator
-    // [9-40]: Winning Pubkey (32 bytes)
     let mut ixn_data = get_ixn_discriminator("seed").to_vec();
     ixn_data.append(&mut rand_seed.to_le_bytes().to_vec());
 
     let request_pubkey = runner.function_request_key.unwrap();
 
     // ACCOUNTS:
-    // 1. Lottery (mut): our user who guessed
-    // 2. Escrow (mut):
-    // 3. Winner (mut):
-    // 4. Switchboard Program
-    // 5. Switchboard State
-    // 6. Switchboard Function
-    // 7. Switchboard Function Request (mut):
-    // 8. Enclave Signer (signer): our Gramine generated keypair
-    // 9. Switchboard Request Escrow (mut):
-    // 10. System Program
-    // 11. Token Program
     let draw_winner_ixn = Instruction {
         program_id: params.program_id,
         data: ixn_data,
