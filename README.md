@@ -45,11 +45,11 @@ Users, with their private key and the reported seed, can then generate the final
 
 With these security aspects in mind, let's delve into the specific functions provided by Switchboard.
 
-## Switchboard Functions <TODO: Brief Introduction to Switchboard Functions>
+## Switchboard Functions
 
 Switchboard Functions allow you to **_"callback"_** into your program with some arbitrary instruction. This means within your function you can make network calls to off-chain resources and determine which instruction on your program to respond with.
 
-Switchboard oracles will read the emitted partially signed transaction, verify the code was executed within a Trusted Execution Environment (TEE), and relay the transaction on-chain. Switchboard oracles read a generated "quote" from the codes runtime when you emit the partially signed transaction from your container. This code is unique to the generated executable and relevant OS files. Any time you change the code or a dependency, your quote will change and you will need to update your Switchboard Function config. These quotes are known as `MrEnclaves` and represent a fingerprint of the code and the runtime. <TODO: Expand on `MrEnclaves`>. Within your Switchboard Function, you define a whitelist of MrEnclaves that are allowed to perform some action on your contract's behalf. **!! Make sure you validate the Switchboard accounts, as seen below with:** `switchboard_request.validate_signer()`
+Switchboard oracles will read the emitted partially signed transaction, verify the code was executed within a Trusted Execution Environment (TEE), and relay the transaction on-chain. Switchboard oracles read a generated "quote" from the codes runtime when you emit the partially signed transaction from your container. This code is unique to the generated executable and relevant OS files. Any time you change the code or a dependency, your quote will change and you will need to update your Switchboard Function config. These quotes are known as `MrEnclaves` and represent a fingerprint of the code and the runtime. Within your Switchboard Function, you define a whitelist of MrEnclaves that are allowed to perform some action on your contract's behalf. **!! Make sure you validate the Switchboard accounts, as seen below with:** `switchboard_request.validate_signer()`
 
 ```rust
 #[derive(Accounts)]
