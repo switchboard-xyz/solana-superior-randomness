@@ -19,7 +19,7 @@ all: anchor_sync build
 
 anchor_sync :; anchor keys sync
 anchor_build :; anchor build
-anchor_publish:; make -j 2 simple-flip-deploy callback-flip-deploy
+anchor_publish:; make -j 2 superior-flip-deploy callback-flip-deploy
 
 docker_build:
 	docker buildx build --platform linux/amd64 -f ./switchboard-function/Dockerfile -t ${DOCKER_IMAGE_NAME} --load ./switchboard-function
@@ -40,17 +40,11 @@ measurement: check_docker_env
 	@docker stop my-switchboard-function > /dev/null
 	@docker rm my-switchboard-function > /dev/null
 
-simple-flip:
-	anchor run simple-flip
-simple-flip-deploy:
-	anchor build -p super_simple_randomness
-	anchor deploy --provider.cluster devnet -p super_simple_randomness
-
-callback-flip:
-	anchor run callback-flip
-callback-flip-deploy:
-	anchor build -p switchboard_randomness_callback
-	anchor deploy --provider.cluster devnet -p switchboard_randomness_callback
+superior-flip:
+	anchor run superior-flip
+superior-flip-deploy:
+	anchor build -p superior_randomness
+	anchor deploy --provider.cluster devnet -p superior_randomness
 
 # Task to clean up the compiled rust application
 clean:

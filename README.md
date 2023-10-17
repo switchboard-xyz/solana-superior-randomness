@@ -89,6 +89,7 @@ make superior-flip-deploy
 # OR
 anchor build -p superior_randomness
 anchor deploy --provider.cluster devnet -p superior_randomness
+# Deploy IDL as needed with changes
 ```
 
 Submit a guess and await the result:
