@@ -34,11 +34,9 @@ impl Reveal<'_> {
             &req.seed.to_le_bytes(),
         );
         let first_ix = load_instruction_at_checked(0, &ctx.accounts.instruction_sysvar.to_account_info())?;
-        msg!("{:#?}", first_ix);
-        msg!("{:#?}", ix);
-        // if ix != first_ix {
-            // return Err(error!(SbError::SigVerifyFailed));
-        // }
+        if ix != first_ix {
+            return Err(error!(SbError::SigVerifyFailed));
+        }
         let randomness = hash(&signature).to_bytes();
         req.result = randomness;
         msg!("Randomness-: {:?}", randomness);
