@@ -11,7 +11,7 @@ Instead of relying solely on the oracle for the final random number, we incorpor
 1. A user triggers a request with a unique, non-repeatable pubkey.
 2. The oracle, running in an SGX environment (ensuring genuine randomness and code integrity), picks a random seed.
 3. The oracle reports the seed on-chain.
-4. Users derive the final random number using `sha256(ed25519(privateKey, seed))`.
+4. Users derive the final random number using `sha256(ed25519_sign(privateKey, seed))`.
 
 ## Why SGX?
 
