@@ -38,7 +38,7 @@ Users, with their private key and the reported seed, can then generate the final
 
 ## Security Considerations
 
-- **Private Key Security**: It's crucial for users to safeguard their private keys. Exposure of a secret key to the oracle could allow revealing the randomness to the oracle before it commits to a seed on-chain.
+- **Key Security**: It's crucial for users to safeguard generated secrets. Exposure of a user's request seed to the oracle could allow revealing the randomness to the oracle before it commits to a seed on-chain.
 
 - **Oracle Trust**: While the SGX provides a secure environment, always ensure you're interfacing with a reputable and verified oracle queue.
 
