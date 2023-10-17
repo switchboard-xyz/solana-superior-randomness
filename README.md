@@ -37,11 +37,11 @@ Users, with their private key and the reported seed, can then generate the final
 
 ## Security Considerations
 
-- **Private Key Security**: It's crucial for users to safeguard their private keys. Exposure would allow the recreation of the random number by anyone with seed knowledge.
+- **Private Key Security**: It's crucial for users to safeguard their private keys. Exposure of a secret key to the oracle could allow revealing the randomness to the oracle before it commits to a seed on-chain.
 
-- **Oracle Trust**: While the SGX provides a secure environment, always ensure you're interfacing with a reputable and verified oracle service.
+- **Oracle Trust**: While the SGX provides a secure environment, always ensure you're interfacing with a reputable and verified oracle queue.
 
-- **Unique PubKey**: The mechanism generating non-repeatable pubkeys must be foolproof to prevent any potential gaming of the system.
+- **Unique PubKey**: The mechanism generating non-repeatable pubkeys must be enforced to prevent any potential gaming of the system.
 
 With these security aspects in mind, let's delve into the specific functions provided by Switchboard.
 
